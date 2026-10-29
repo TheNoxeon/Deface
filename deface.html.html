@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030303">
+  <title>Noxeon.exe // SYSTEM OVERRIDE</title>
+
+
+<style>
+:root{
+  --black:#010101;
+  --black2:#050505;
+  --red:#ff003d;
+  --red2:#8f0024;
+  --red3:#ff174f;
+  --white:#f5f5f5;
+  --gray:#777;
+  --green:#8affb2;
+  --border:rgba(255,0,61,.30);
+}
+
+*{box-sizing:border-box}
+
+html{background:var(--black);scroll-behavior:smooth}
+
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--white);
+  background:
+    radial-gradient(ellipse at center,rgba(255,0,61,.11) 0%,transparent 38%),
+    radial-gradient(ellipse at 50% 115%,rgba(255,0,61,.08),transparent 45%),
+    #010101;
+  font-family:"Courier New",Consolas,monospace;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow-x:hidden;
+  position:relative;
+  isolation:isolate;
+}
+
+/* GRID */
+body::before{
+  content:"";
+  position:fixed;
+  inset:-80px;
+  z-index:-5;
+  background-image:
+    linear-gradient(rgba(255,0,61,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,0,61,.055) 1px,transparent 1px);
+  background-size:40px 40px;
+  transform:perspective(700px) rotateX(58deg) scale(1.4);
+  transform-origin:center bottom;
+  opacity:.7;
+  animation:gridMove 16s linear infinite;
+}
+
+/* SCANLINES + VIGNETTE */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:50;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.018) 0px,
+      rgba(255,255,255,.018) 1px,
+      transparent 2px,
+      transparent 4px
+    ),
+    radial-gradient(ellipse at center,transparent 42%,rgba(0,0,0,.72) 100%);
+}
+
+/* MOVING SCAN BAR */
+.container{
+  width:min(950px,calc(100% - 30px));
+  margin:25px auto;
+  padding:30px 34px 32px;
+  position:relative;
+  overflow:hidden;
+  text-align:center;
+  background:
+    linear-gradient(135deg,rgba(255,0,61,.045),transparent 25%),
+    linear-gradient(315deg,rgba(255,0,61,.035),transparent 30%),
+    rgba(3,3,3,.91);
+  border:1px solid var(--border);
+  box-shadow:
+    0 0 0 1px rgba(255,0,61,.04) inset,
+    0 0 35px rgba(255,0,61,.12),
+    0 0 120px rgba(255,0,61,.045),
+    0 30px 100px rgba(0,0,0,.9);
+  backdrop-filter:blur(9px);
+  animation:boot .8s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.container::before{
+  content:"";
+  position:absolute;
+  inset:-100%;
+  width:40%;
+  background:linear-gradient(90deg,transparent,rgba(255,0,61,.045),transparent);
+  transform:rotate(18deg);
+  animation:lightSweep 7s ease-in-out infinite;
+  pointer-events:none;
+}
+
+.container::after{
+  content:"";
+  position:absolute;
+  left:0;
+  top:-20%;
+  width:100%;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+  box-shadow:0 0 18px var(--red);
+  opacity:.7;
+  animation:scanner 5s linear infinite;
+  pointer-events:none;
+}
+
+.container>*{position:relative;z-index:3}
+
+/* HUD CORNERS */
+.container{
+  --corner:65px;
+}
+
+.container .hud-corner{
+  display:none;
+}
+
+.logo{
+  width:min(310px,68vw);
+  aspect-ratio:1;
+  object-fit:cover;
+  display:block;
+  margin:22px auto 24px;
+  border-radius:50%;
+  border:2px solid var(--red);
+  outline:1px solid rgba(255,0,61,.25);
+  outline-offset:8px;
+  box-shadow:
+    0 0 8px var(--red),
+    0 0 25px rgba(255,0,61,.7),
+    0 0 70px rgba(255,0,61,.25),
+    inset 0 0 25px rgba(255,0,61,.15);
+  animation:logoPulse 3s ease-in-out infinite;
+}
+
+/* STATUS STRIP */
+.logo::after{display:none}
+
+h1{
+  margin:0;
+  position:relative;
+  color:#fff;
+  font-size:clamp(27px,5vw,52px);
+  line-height:1.05;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  text-shadow:
+    0 0 4px #fff,
+    0 0 16px rgba(255,0,61,.35);
+  animation:glitch 5s infinite;
+}
+
+h1::before,
+h1::after{
+  content:attr(data-text);
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:0;
+}
+
+h1::before{
+  color:#00ffff;
+  transform:translate(-2px,0);
+}
+
+h1::after{
+  color:#ff0040;
+  transform:translate(2px,0);
+}
+
+h1 span{
+  color:var(--red);
+  text-shadow:
+    0 0 5px var(--red),
+    0 0 15px var(--red),
+    0 0 40px rgba(255,0,61,.65);
+}
+
+/* SUBTITLE */
+.subtitle{
+  margin:17px 0 18px;
+  color:#bbb;
+  font-size:12px;
+  letter-spacing:7px;
+  text-transform:uppercase;
+  text-shadow:0 0 10px rgba(255,0,61,.45);
+}
+
+.line{
+  width:min(700px,90%);
+  height:1px;
+  margin:0 auto 22px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+  box-shadow:0 0 12px rgba(255,0,61,.7);
+}
+
+.line::before{
+  content:"[ NOXEON.exe // ACCESS NODE ]";
+  position:absolute;
+  left:50%;
+  transform:translate(-50%,-18px);
+  padding:0 10px;
+  color:#5e5e5e;
+  background:#030303;
+  font-size:8px;
+  letter-spacing:2px;
+  white-space:nowrap;
+}
+
+/* TERMINAL */
+.terminal{
+  width:min(720px,100%);
+  margin:0 auto;
+  padding:0 18px 18px;
+  text-align:left;
+  background:
+    radial-gradient(circle at 50% 0,rgba(255,0,61,.045),transparent 50%),
+    #030303;
+  border:1px solid rgba(255,0,61,.32);
+  box-shadow:
+    0 0 0 1px rgba(255,0,61,.025) inset,
+    0 0 25px rgba(255,0,61,.06),
+    inset 0 0 35px rgba(0,0,0,.8);
+  color:#bdbdbd;
+  font-size:13px;
+  line-height:1.85;
+  overflow:hidden;
+}
+
+/* TERMINAL TOP BAR */
+.terminal::before{
+  content:"●  ●  ●     NOXEON.exe_TERMINAL  //  ROOT SESSION";
+  display:block;
+  margin:0 -18px 15px;
+  padding:8px 13px;
+  background:linear-gradient(90deg,rgba(255,0,61,.09),rgba(255,0,61,.015));
+  border-bottom:1px solid rgba(255,0,61,.22);
+  color:#777;
+  font-size:9px;
+  letter-spacing:1.5px;
+  text-align:left;
+}
+
+.terminal::after{
+  content:"";
+  display:block;
+  height:1px;
+  margin-top:12px;
+  background:linear-gradient(90deg,var(--red),transparent);
+  box-shadow:0 0 8px rgba(255,0,61,.45);
+}
+
+.terminal p{
+  margin:0;
+}
+
+.terminal p::first-letter{
+  color:var(--red);
+}
+
+.cursor{
+  display:inline-block;
+  width:8px;
+  height:15px;
+  margin-left:4px;
+  vertical-align:-2px;
+  background:var(--red);
+  box-shadow:0 0 9px var(--red);
+  animation:blink .75s steps(1,end) infinite;
+}
+
+/* BUTTON */
+main > div[style]{
+  margin-top:25px !important;
+}
+
+a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  min-width:260px;
+  padding:14px 25px;
+  overflow:hidden;
+  border:1px solid var(--red);
+  border-radius:1px;
+  background:#050505;
+  color:#fff !important;
+  text-decoration:none;
+  font-weight:bold;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  box-shadow:
+    0 0 8px rgba(255,0,61,.4),
+    inset 0 0 15px rgba(255,0,61,.07);
+  transition:.2s ease;
+}
+
+a::before{
+  content:"[ EXECUTE ]";
+  margin-right:12px;
+  color:var(--red);
+  font-size:10px;
+}
+
+a::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-130%;
+  width:80%;
+  height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+  transform:skewX(-20deg);
+  transition:.5s;
+}
+
+a:hover{
+  background:var(--red);
+  color:#000 !important;
+  transform:translateY(-2px);
+  box-shadow:
+    0 0 10px var(--red),
+    0 0 35px rgba(255,0,61,.65),
+    0 0 70px rgba(255,0,61,.2);
+}
+
+a:hover::before{color:#000}
+a:hover::after{left:140%}
+
+/* BOOT / GLITCH */
+@keyframes boot{
+  from{opacity:0;filter:brightness(0);transform:scale(.97) translateY(20px)}
+  60%{filter:brightness(1.5)}
+  to{opacity:1;filter:brightness(1);transform:scale(1) translateY(0)}
+}
+
+@keyframes gridMove{
+  from{background-position:0 0,0 0}
+  to{background-position:0 40px,40px 0}
+}
+
+@keyframes scanner{
+  0%{top:-10%}
+  100%{top:110%}
+}
+
+@keyframes lightSweep{
+  0%,65%,100%{left:-120%}
+  80%{left:130%}
+}
+
+@keyframes logoPulse{
+  0%,100%{
+    transform:scale(1);
+    filter:brightness(.95);
+  }
+  50%{
+    transform:scale(1.02);
+    filter:brightness(1.12);
+  }
+}
+
+@keyframes glitch{
+  0%,88%,100%{transform:translate(0)}
+  89%{transform:translate(-3px,1px);filter:skewX(-2deg)}
+  90%{transform:translate(3px,-1px);filter:skewX(2deg)}
+  91%{transform:translate(-1px,0);filter:none}
+  92%{transform:translate(0)}
+}
+
+@keyframes blink{
+  50%{opacity:0}
+}
+
+@media(max-width:650px){
+  body{align-items:flex-start}
+
+  .container{
+    width:calc(100% - 14px);
+    margin:7px auto;
+    padding:22px 13px 25px;
+  }
+
+  .logo{
+    width:min(245px,67vw);
+    margin:17px auto 22px;
+  }
+
+  h1{font-size:clamp(25px,8vw,38px);letter-spacing:1px}
+
+  .subtitle{
+    font-size:9px;
+    letter-spacing:3px;
+  }
+
+  .line::before{
+    font-size:6px;
+    letter-spacing:1px;
+  }
+
+  .terminal{
+    padding:0 12px 14px;
+    font-size:11px;
+  }
+
+  .terminal::before{
+    margin:0 -12px 12px;
+    font-size:7px;
+    letter-spacing:1px;
+  }
+
+  a{
+    width:100%;
+    min-width:0;
+    font-size:11px;
+    letter-spacing:1px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+  }
+}
+
+/* NOXEON.exe emblem */
+.logo-mark{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  width:min(310px,68vw);
+  aspect-ratio:1;
+  margin:22px auto 24px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at center,rgba(255,0,61,.16),transparent 58%),
+    repeating-linear-gradient(0deg,transparent 0 8px,rgba(255,0,61,.07) 9px 10px),
+    #030303;
+  color:#fff;
+  font-weight:900;
+  letter-spacing:3px;
+  position:relative;
+  isolation:isolate;
+}
+.logo-mark::before{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border:1px solid rgba(255,0,61,.42);
+  border-radius:50%;
+  box-shadow:inset 0 0 25px rgba(255,0,61,.08);
+}
+.logo-mark span{
+  font-size:clamp(26px,5vw,43px);
+  text-shadow:0 0 12px rgba(255,0,61,.65);
+}
+.logo-mark small{
+  color:var(--red);
+  font-size:clamp(18px,3vw,25px);
+  letter-spacing:5px;
+}
+.logo-mark i{
+  margin-top:13px;
+  color:#777;
+  font-size:9px;
+  font-style:normal;
+  letter-spacing:3px;
+}
+@media(max-width:650px){
+  .logo-mark{width:min(245px,67vw);margin:17px auto 22px}
+}
+
+</style>
+
+
+</head>
+<body>
+<main class="container">
+    <div class="logo logo-mark" role="img" aria-label="Noxeon.exe"><span>NOXEON</span><small>.exe</small><i>ACCESS NODE</i></div>
+    <h1 data-text="This web has been hacked">This web has been <span>hacked</span></h1>
+    <div class="subtitle">— NOXEON.exe —</div>
+    <div class="line"></div>
+    <div class="terminal">
+        &gt; connection established<br>
+        &gt; Noxeon.exe was here<span class="cursor">_</span>
+    </div>
+    <div style="margin-top:18px;">
+        <a class="channel-link" href="https://t.me/TheNoxeon" target="_blank" rel="noopener noreferrer">
+            JOIN // TELEGRAM
+        </a>
+    </div>
+</main>
+</body>
+</html>
